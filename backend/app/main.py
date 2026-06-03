@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Form, UploadFile, File
 # Force non-GUI matplotlib backend early to avoid Tkinter imports in workers
 try:
     import matplotlib
