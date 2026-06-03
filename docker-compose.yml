@@ -1,0 +1,16 @@
+services:
+  memoryos:
+    build: .
+    container_name: memoryos
+    ports:
+      - "8001:8001"
+      - "5173:5173"
+    env_file:
+      - .env
+    environment:
+      - MEMORYOS_BACKEND_PORT=8001
+      - MEMORYOS_FRONTEND_PORT=5173
+      - VITE_API_URL=http://localhost:8001
+    volumes:
+      - ./data:/app/data
+    restart: always

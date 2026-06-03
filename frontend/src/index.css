@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+:root {
+  color-scheme: dark;
+  --aurora-orange: rgba(255, 122, 61, 0.28);
+  --aurora-blue: rgba(107, 214, 255, 0.22);
+  --aurora-violet: rgba(126, 103, 255, 0.2);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-background text-text font-sans antialiased;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255, 122, 61, 0.17), transparent 40%),
+    radial-gradient(circle at 90% 18%, rgba(107, 214, 255, 0.15), transparent 45%),
+    radial-gradient(circle at 52% 100%, rgba(126, 103, 255, 0.11), transparent 42%),
+    linear-gradient(165deg, #080b14 0%, #0c1321 58%, #090f1a 100%);
+  background-attachment: fixed;
+}
+
+.app-aurora-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.app-aurora-bg::before,
+.app-aurora-bg::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 9999px;
+  filter: blur(82px);
+}
+
+.app-aurora-bg::before {
+  width: 42vw;
+  height: 42vw;
+  left: -10vw;
+  top: -12vh;
+  background: radial-gradient(circle, var(--aurora-orange), transparent 70%);
+  animation: aurora-drift 16s ease-in-out infinite alternate;
+}
+
+.app-aurora-bg::after {
+  width: 38vw;
+  height: 38vw;
+  right: -8vw;
+  bottom: -16vh;
+  background: radial-gradient(circle, var(--aurora-blue), transparent 72%);
+  animation: aurora-drift 18s ease-in-out infinite alternate-reverse;
+}
+
+.app-aurora-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2vw, -1.5vh, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(-2.5vw, 2vh, 0) scale(0.97);
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full hover:bg-muted/30 transition-colors;
+}
+
+textarea,
+input {
+  caret-color: #ff9b6a;
+}
+
+textarea:focus,
+textarea:focus-visible,
+input:focus,
+input:focus-visible {
+  outline: none;
+}
