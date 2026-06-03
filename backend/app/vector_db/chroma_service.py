@@ -1,7 +1,14 @@
 import chromadb
-from chromadb.utils import embedding_functions
 from app.core.config import settings
 import os
+from chromadb.utils import embedding_functions
+
+class DummyEmbeddingFunction:
+    def __call__(self, inputs):
+        # Return a fixed-size zero vector (384 dims) for any input
+        # This avoids loading heavy sentence‑transformers models.
+        return [[0.0] * 384 for _ in inputs]
+
 
 class ChromaService:
     def __init__(self):
@@ -9,25 +16,21 @@ class ChromaService:
         os.makedirs(self.persist_directory, exist_ok=True)
         # Lazy initialization — loaded on first use to save memory at startup
         self._client = None
-        self._embedding_function = None
         self._memories_collection = None
         self._summaries_collection = None
 
     def _ensure_initialized(self):
-        """Initialize ChromaDB and SentenceTransformers only when first needed."""
+        """Initialize ChromaDB only when first needed. Uses ChromaDB's built-in
+        default embedding function (ONNX all-MiniLM-L6-v2) — no PyTorch needed."""
         if self._client is not None:
             return
         self._client = chromadb.PersistentClient(path=self.persist_directory)
-        self._embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="all-MiniLM-L6-v2"
-        )
+        # Using default embedding function (ONNX-based, ~50MB vs ~400MB for PyTorch)
         self._memories_collection = self._client.get_or_create_collection(
-            name="memories",
-            embedding_function=self._embedding_function
+            name="memories"
         )
         self._summaries_collection = self._client.get_or_create_collection(
-            name="summaries",
-            embedding_function=self._embedding_function
+            name="summaries"
         )
 
     @property

@@ -194,31 +194,11 @@ def export_chat(chat_id: int, format: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid format")
 
 # OCR endpoint
-from fastapi import UploadFile, File, Form
-@app.post("/ocr/")
-async def process_ocr(workspace_id: int = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)):
-    from app.services.ocr_service import ocr_service
-    from app.services.memory_service import memory_service
-    
-    content = await file.read()
-    text = ocr_service.process_image(content)
-    url = ocr_service.upload_to_cloudinary(content, file.filename)
-    
-    # Save file record
-    db_file = models.UploadedFile(filename=file.filename, url=url, file_type=file.content_type, workspace_id=workspace_id)
-    db.add(db_file)
-    db.commit()
-    db.refresh(db_file)
-    
-    # Save as memory
-    db_memory = memory_service.save_memory(db, workspace_id, text, "Fact", 5)
-    
-    # Link image memory
-    db_image_mem = models.ImageMemory(uploaded_file_id=db_file.id, extracted_text=text, memory_id=db_memory.id)
-    db.add(db_image_mem)
-    db.commit()
-    
-    return {"extracted_text": text, "url": url}
+# OCR endpoint disabled to save memory (requires heavy OCR libs)
+# @app.post("/ocr/")
+# async def process_ocr(...):
+#     raise HTTPException(status_code=501, detail="OCR not available in this deployment")
+
 
 # PDF endpoint
 @app.post("/pdf/")
@@ -235,15 +215,13 @@ async def process_pdf(workspace_id: int = Form(...), file: UploadFile = File(...
     return {"extracted_text": text[:1000] + "...", "memory_id": db_memory.id}
 
 # Graph endpoint
+# Graph endpoint – return raw graph data (node-link format) for frontend to render.
 @app.get("/graph/{workspace_id}")
 def get_graph(workspace_id: int, db: Session = Depends(get_db)):
     from app.graph.graph_service import graph_service
     memories = db.query(models.Memory).filter(models.Memory.workspace_id == workspace_id).all()
-    
     for mem in memories:
         cat = db.query(models.MemoryCategory).filter(models.MemoryCategory.id == mem.category_id).first()
         graph_service.add_memory_node(mem.id, mem.content[:30], cat.name if cat else "Fact")
-        
-    img_str = graph_service.visualize_graph()
-    return {"image": img_str}
-
+    # Return networkx node-link JSON instead of base64 image
+    return graph_service.get_graph_data()

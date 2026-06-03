@@ -3,14 +3,11 @@ uvicorn
 sqlalchemy
 psycopg2-binary
 pydantic
-pydantic-settings
 python-dotenv
 groq
 langgraph
-sentence-transformers
 chromadb
 networkx
-easyocr
 pillow
 cloudinary
 pandas
@@ -21,4 +18,3 @@ reportlab
 python-docx
 openpyxl
 python-multipart
-matplotlib
