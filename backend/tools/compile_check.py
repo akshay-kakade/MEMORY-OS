@@ -1,6 +1,8 @@
 import py_compile, os
 errors = []
-for root, dirs, files in os.walk('app'):
+script_dir = os.path.dirname(os.path.abspath(__file__))
+app_dir = os.path.join(script_dir, '..', 'app')
+for root, dirs, files in os.walk(app_dir):
     for f in files:
         if f.endswith('.py'):
             path = os.path.join(root,f)

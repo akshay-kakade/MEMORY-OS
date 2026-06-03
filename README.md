@@ -64,6 +64,7 @@ MemoryOS is built to demonstrate practical GenAI engineering, RAG architectures,
 * Long-term context retention
 * Context-aware response generation
 * Groq-powered LLM inference
+* **Real-time Web Search**: Automatically conducts web searches to answer queries requesting latest news, current facts, weather, or explicit search tasks.
 
 ---
 
@@ -447,6 +448,7 @@ Stores:
 * LangGraph
 * ChromaDB
 * Sentence Transformers
+* Tavily API (Real-time web search)
 * Retrieval-Augmented Generation (RAG)
 * Semantic Search
 * Prompt Engineering
@@ -489,8 +491,9 @@ Stores:
 
 ## Deployment
 
-* Docker
-* Render
+* Docker (Local containerization)
+* Render (Backend API hosting)
+* Vercel (Frontend static hosting)
 
 ---
 
@@ -498,11 +501,14 @@ Stores:
 
 # Local Development
 
+This project is organized as a monorepo with separate `backend` (FastAPI) and `frontend` (React + Vite) directories.
+
 ## Clone Repository
 
 ## Backend Setup
 
 ```bash
+cd backend
 pip install -r requirements.txt
 ```
 
@@ -515,49 +521,67 @@ npm install
 
 ## Environment Variables
 
-Create a `.env` file:
+### Backend Configuration
+Create a `.env` file in the `backend/` directory (or use a root `.env` file for Docker Compose):
 
 ```env
 DATABASE_URL=your_neon_database_url
-
 GROQ_API_KEY=your_groq_api_key
-
 CLOUDINARY_CLOUD_NAME=your_cloudinary_name
 CLOUDINARY_API_KEY=your_cloudinary_api_key
 CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
 TAVILY_API_KEY=optional
+```
+
+### Frontend Configuration
+Create a `.env` file in the `frontend/` directory:
+
+```env
+VITE_API_URL=http://localhost:8001
 ```
 
 ## Start Application
 
-Backend:
+### Option 1: Docker Compose (Recommended)
+Run both backend and frontend services using Docker Compose:
 
 ```bash
+docker-compose up --build
+```
+This will start:
+- Backend on [http://localhost:8001](http://localhost:8001)
+- Frontend on [http://localhost:3000](http://localhost:3000)
+
+### Option 2: Run Separately
+Start Backend:
+```bash
+cd backend
 python start.py
 ```
 
-Frontend:
-
+Start Frontend:
 ```bash
+cd frontend
 npm run dev
 ```
 
 ---
 
-# Docker Deployment
+# Production Deployment
 
-Build:
+## Backend Deployment (Render)
+1. Create a new **Web Service** on Render and connect your repository.
+2. In the configuration settings, set the **Root Directory** to `backend`.
+3. Set the **Build Command** to `pip install -r requirements.txt`.
+4. Set the **Start Command** to `python start.py` (or `uvicorn app.main:app --host 0.0.0.0 --port $PORT`).
+5. Add your environment variables (`DATABASE_URL`, `GROQ_API_KEY`, etc.) in the Render dashboard.
 
-```bash
-docker build -t memoryos .
-```
-
-Run:
-
-```bash
-docker run --env-file .env -p 8000:8000 memoryos
-```
+## Frontend Deployment (Vercel)
+1. Create a new project on Vercel and connect your repository.
+2. Under project settings, set the **Root Directory** to `frontend`.
+3. Vercel will automatically detect Vite settings (Build command: `npm run build`, Output directory: `dist`).
+4. Under Environment Variables, add `VITE_API_URL` pointing to your deployed Render URL: `https://memory-os-80fm.onrender.com`.
+5. Deploy!
 
 ---
 

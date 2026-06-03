@@ -54,7 +54,7 @@ class ChatService:
 - Useful for sharing, archiving, or offline access
 
 ### 7. Web Search (Optional)
-- If user asks to "search for...", "look up...", or "find info on..."
+- If user asks to "search for...", "look up...", "find info on...", or asks for **latest**, **current**, or **recent** information
 - The assistant performs a web search and includes results in the response
 - Keeps responses up-to-date with current information
 
@@ -81,7 +81,7 @@ If user asks: "What's the Knowledge Graph?"
 → "It's a visual map of how your memories connect. Shows relationships between topics so you can discover patterns."
 
 If user asks: "Can I search the web?"
-→ "Yes, ask me to 'search for...' or 'look up...'. Results are included in my response."
+→ "Yes, ask me to 'search for...', 'look up...', or ask for the latest/current information. Results will be retrieved from the internet."
 
 ## CONTEXT PROVIDED TO YOU
 
@@ -113,7 +113,8 @@ Now, respond concisely and helpfully to the user's question."""
         
         # 2. Check if user wants a web search
         web_context = ""
-        if "search" in user_message.lower() or "look up" in user_message.lower():
+        search_triggers = ["search", "look up", "find info", "latest", "current", "recent", "news", "weather", "today"]
+        if any(trigger in user_message.lower() for trigger in search_triggers):
             try:
                 web_context = tools_service.search_web(user_message)
             except Exception as e:

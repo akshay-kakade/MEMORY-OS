@@ -1,16 +1,28 @@
 services:
-  memoryos:
-    build: .
-    container_name: memoryos
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: memoryos-backend
     ports:
       - "8001:8001"
-      - "5173:5173"
     env_file:
       - .env
     environment:
-      - MEMORYOS_BACKEND_PORT=8001
-      - MEMORYOS_FRONTEND_PORT=5173
-      - VITE_API_URL=http://localhost:8001
+      - PORT=8001
     volumes:
-      - ./data:/app/data
+      - ./backend/data:/app/data
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8001
+    container_name: memoryos-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
     restart: always
