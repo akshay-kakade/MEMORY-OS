@@ -246,3 +246,4 @@ def get_graph(workspace_id: int, db: Session = Depends(get_db)):
         
     img_str = graph_service.visualize_graph()
     return {"image": img_str}
+

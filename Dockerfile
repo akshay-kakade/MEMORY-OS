@@ -37,11 +37,9 @@ RUN mkdir -p data/chroma
 
 # Set environment variables
 ENV PYTHONPATH=.
-ENV MEMORYOS_BACKEND_PORT=8001
-ENV MEMORYOS_FRONTEND_PORT=5173
 
-# Expose ports for FastAPI (8001) and Vite frontend (5173)
-EXPOSE 8001
+# Expose ports for FastAPI (8000) and Vite frontend (5173)
+EXPOSE 8000
 EXPOSE 5173
 
 # Run the start script
