@@ -51,7 +51,24 @@ MemoryOS is built to demonstrate practical GenAI engineering, RAG architectures,
 
 
 ---
+Live Demo
 
+Frontend: https://memory-os-ai.vercel.app/
+
+Deployment Notes
+
+To ensure stable operation within free-tier cloud resource limits, a small number of resource-intensive features have been temporarily disabled in the public deployment.
+
+Disabled for Deployment
+OCR Processing (EasyOCR)
+Local Embedding Generation (Sentence Transformers)
+ChromaDB Semantic Vector Search
+Server-Side Graph Image Rendering (Matplotlib)
+Reason
+
+These components require significant memory during startup and runtime. Free-tier hosting environments provide limited RAM, which can lead to container crashes, out-of-memory errors, and deployment instability.
+
+To maintain a reliable public deployment, these features were disabled while preserving all core MemoryOS functionality.
 
 
 # Key Features
