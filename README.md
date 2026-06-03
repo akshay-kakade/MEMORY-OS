@@ -580,7 +580,7 @@ npm run dev
 1. Create a new project on Vercel and connect your repository.
 2. Under project settings, set the **Root Directory** to `frontend`.
 3. Vercel will automatically detect Vite settings (Build command: `npm run build`, Output directory: `dist`).
-4. Under Environment Variables, add `VITE_API_URL` pointing to your deployed Render URL: `https://memory-os-80fm.onrender.com`.
+4. Under Environment Variables, add `VITE_API_URL` pointing to your deployed Render URL: `https://memory-os-bfri.onrender.com`.
 5. Deploy!
 
 ---
