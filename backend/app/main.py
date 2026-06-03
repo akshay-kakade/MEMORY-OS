@@ -178,31 +178,6 @@ def export_chat(chat_id: int, format: str, db: Session = Depends(get_db)):
     messages = db.query(models.Message).filter(models.Message.chat_id == chat_id).order_by(models.Message.created_at).all()
     msg_data = [{"role": m.role, "content": m.content, "timestamp": str(m.created_at)} for m in messages]
     
-    if format == "pdf":
-        content = export_service.export_as_pdf(chat.title, msg_data)
-        return Response(content=content, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=chat_{chat_id}.pdf"})
-    elif format == "docx":
-        content = export_service.export_as_docx(chat.title, msg_data)
-        return Response(content=content, media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document", headers={"Content-Disposition": f"attachment; filename=chat_{chat_id}.docx"})
-    elif format == "excel":
-        content = export_service.export_as_excel(msg_data)
-        return Response(content=content, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": f"attachment; filename=chat_{chat_id}.xlsx"})
-    elif format == "csv":
-    from app.services.memory_service import memory_service
-    
-    content = await file.read()
-    text = tools_service.extract_text_from_pdf(content)
-    
-    # Save as memory (summarize if too long)
-    db_memory = memory_service.save_memory(db, workspace_id, text[:2000], "Fact", 7)
-    
-    return {"extracted_text": text[:1000] + "...", "memory_id": db_memory.id}
-
-# Graph endpoint
-# Graph endpoint – return raw graph data (node-link format) for frontend to render.
-@app.get("/graph/{workspace_id}")
-def get_graph(workspace_id: int, db: Session = Depends(get_db)):
-    from app.graph.graph_service import graph_service
     memories = db.query(models.Memory).filter(models.Memory.workspace_id == workspace_id).all()
     for mem in memories:
         cat = db.query(models.MemoryCategory).filter(models.MemoryCategory.id == mem.category_id).first()
