@@ -188,22 +188,6 @@ def export_chat(chat_id: int, format: str, db: Session = Depends(get_db)):
         content = export_service.export_as_excel(msg_data)
         return Response(content=content, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": f"attachment; filename=chat_{chat_id}.xlsx"})
     elif format == "csv":
-        content = export_service.export_as_csv(msg_data)
-        return Response(content=content, media_type="text/csv", headers={"Content-Disposition": f"attachment; filename=chat_{chat_id}.csv"})
-    else:
-        raise HTTPException(status_code=400, detail="Invalid format")
-
-# OCR endpoint
-# OCR endpoint disabled to save memory (requires heavy OCR libs)
-# @app.post("/ocr/")
-# async def process_ocr(...):
-#     raise HTTPException(status_code=501, detail="OCR not available in this deployment")
-
-
-# PDF endpoint
-@app.post("/pdf/")
-async def process_pdf(workspace_id: int = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)):
-    from app.services.tools_service import tools_service
     from app.services.memory_service import memory_service
     
     content = await file.read()
