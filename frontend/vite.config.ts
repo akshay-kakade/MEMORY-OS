@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
     allowedHosts: [
-      "memory-os-80fm.onrender.com/"
+      "memory-os-80fm.onrender.com"
     ]
   }
 })
