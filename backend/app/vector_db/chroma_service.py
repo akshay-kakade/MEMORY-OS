@@ -1,6 +1,12 @@
 import chromadb
 from app.core.config import settings
 import os
+from chromadb.utils import embedding_functions
+
+class DummyEmbeddingFunction:
+    def __call__(self, inputs):
+        # Return a fixed-size zero vector (384 dims) for any input
+        # This avoids loading heavy sentence‑transformers models.
         return [[0.0] * 384 for _ in inputs]
 
 
