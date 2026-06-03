@@ -7,20 +7,38 @@ class ChromaService:
     def __init__(self):
         self.persist_directory = settings.CHROMA_PERSIST_DIRECTORY
         os.makedirs(self.persist_directory, exist_ok=True)
-        
-        self.client = chromadb.PersistentClient(path=self.persist_directory)
-        self.embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
+        # Lazy initialization — loaded on first use to save memory at startup
+        self._client = None
+        self._embedding_function = None
+        self._memories_collection = None
+        self._summaries_collection = None
+
+    def _ensure_initialized(self):
+        """Initialize ChromaDB and SentenceTransformers only when first needed."""
+        if self._client is not None:
+            return
+        self._client = chromadb.PersistentClient(path=self.persist_directory)
+        self._embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name="all-MiniLM-L6-v2"
         )
-        
-        self.memories_collection = self.client.get_or_create_collection(
+        self._memories_collection = self._client.get_or_create_collection(
             name="memories",
-            embedding_function=self.embedding_function
+            embedding_function=self._embedding_function
         )
-        self.summaries_collection = self.client.get_or_create_collection(
+        self._summaries_collection = self._client.get_or_create_collection(
             name="summaries",
-            embedding_function=self.embedding_function
+            embedding_function=self._embedding_function
         )
+
+    @property
+    def memories_collection(self):
+        self._ensure_initialized()
+        return self._memories_collection
+
+    @property
+    def summaries_collection(self):
+        self._ensure_initialized()
+        return self._summaries_collection
 
     def add_memory(self, memory_id: str, content: str, metadata: dict):
         self.memories_collection.add(
