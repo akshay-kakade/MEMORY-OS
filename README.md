@@ -43,9 +43,6 @@ MemoryOS is built to demonstrate practical GenAI engineering, RAG architectures,
 # Screenshots
 
 
-
-![alt text](<Screenshot 2026-06-03 110245.png>),
-
 ![alt text](<Screenshot 2026-06-03 120053.png>) ,
 ![alt text](<Screenshot 2026-06-03 120213.png>) ,
 ![alt text](<Screenshot 2026-06-03 120228.png>),
